@@ -1,12 +1,14 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, jsonify
 import numpy as np
 import joblib
 
 app = Flask(__name__)
 
-
 # Load the model
 regmodel = joblib.load('model.joblib')
+
+d = {0: 'vata', 1: 'pitta', 2: 'kappa', 3: 'vata-pitta',
+     4: "vata-kapha", 5: 'pitta-kapha', 6: 'vata-pitta-kapha'}
 
 
 @app.route('/predict_api', methods=['POST'])
@@ -16,8 +18,9 @@ def predict_api():
     data = np.array([list(data)])
     print(data)
     output = regmodel.predict(data)
-    print(output[0])
-    return jsonify(output[0])
+    result = int(output[0])  # Convert to a standard Python integer
+    print(result)
+    return jsonify(d[result])
 
 
 if __name__ == '__main__':
